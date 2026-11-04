@@ -1,17 +1,17 @@
-mlx
-mlx-lm
-pillow
-huggingface-hub
-mlx-vlm
-torch
-torchvision
+mlx==0.32.4
+mlx-lm==0.32.2
+pillow==13.0.0
+huggingface-hub==2.4.0
+mlx-vlm==0.7.11
+torch==2.15.0
+torchvision==0.29.2
 
 # Qwen
-opencv-python
-numpy
-json5
-Pillow
-requests
-psutil
-scikit-image
-openai
+opencv-python==5.0.0.93
+numpy==2.5.4
+json5==0.17.3
+Pillow==13.0.0
+requests==2.34.2
+psutil==7.2.2
+scikit-image==0.26.0
+openai==3.45.0
