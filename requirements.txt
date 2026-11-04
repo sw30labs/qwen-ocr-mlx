@@ -15,3 +15,4 @@ requests==2.34.2
 psutil==7.2.2
 scikit-image==0.26.0
 openai==3.45.0
+certifi==2026.10.18  # VulnOps GHSA-6q48-6c7w-9gw2: transitive dependency floor
