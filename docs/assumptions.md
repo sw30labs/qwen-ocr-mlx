@@ -1,0 +1,19 @@
+# Assumptions register: sw30labs/qwen-ocr-mlx
+
+Recorded 2026-11-10 during a retrospective ADR pass over commit `37686a7715885060405c462d4500b295ed94de52`. Each row is something the ADRs
+infer but the repository does not state outright. Status stays **Open** until the owner confirms or rejects it.
+
+| ID | Assumption | Why needed | Evidence / source | How to verify | Confidence | Status |
+|----|------------|------------|-------------------|---------------|------------|--------|
+| A-001 | The move from captioning to OCR (52373ff) replaced the original purpose; captioning is not expected to come back. | ADR-0001 records it as a replacement, not an addition. | main.py deleted in the same commit that added run_ocr.py; commit message only 'update'. | Ask the owner. | Medium | Open |
+| A-002 | The README and repo description are stale, not describing a separate tool kept elsewhere. | ADR-0001 calls the README stale. | README references src/main.py, which no longer exists. | Owner confirms; update README/description. | High | Open |
+| A-003 | `direct_ocr.py` lives in another (private or local) project and was deliberately left out of this repo. | ADR-0004 explains why the default API path fails from a clone. | Docstring: 'Reuses your existing OCR stack from direct_ocr.py'; never committed here. | Ask the owner where direct_ocr.py lives. | Medium | Open |
+| A-004 | The MiniMax backend was experimental; with no image sent it cannot do real OCR. | ADR-0004 flags the backend as not reading images. | `ocr_with_minimax` sends only '[Image: WxH pixels]' text; comment 'MiniMax is text-only'. | Run with --use-local-minimax on a known image and compare. | High | Open |
+| A-005 | Already-cached HF models are re-downloaded because the cache-layout check looks at the top of `models--...` instead of `snapshots/<sha>/`. | ADR-0005 lists it as a cost (also relevant to the no-duplicate-downloads rule). | `ensure_model_available` checks `model_path/config.json`; HF cache layout uses snapshots/. | Run once with a model cached by another tool and watch for a download. | Medium | Open |
+| A-006 | The hybrid keyframe thresholds (0.97 SSIM, pHash 8, hist 0.90, 0.5-4 s) were tuned by hand on the owner's recordings. | ADR-0002 states where the defaults come from. | No tuning data or notes in repo. | Ask the owner. | Low | Open |
+| A-007 | The `unique_lines` default mismatch (function True, CLI False) is accidental. | ADR-0003 calls it a disagreement. | `process_video(unique_lines=True)` vs `--unique-lines` store_true. | Owner confirms intended default. | Medium | Open |
+| A-008 | The `_strip_thinking` docstring describes intended behaviour (skip frames with no tags only when thinking was truncated) that the code does not fully implement. | ADR-0006 notes the mismatch. | Docstring case 3 vs code path. | Test with a truncated Qwen3 output. | Medium | Open |
+| A-009 | The default model moved to `mlx-community/Qwen3.5-27B-bf16` because it gave better OCR than Qwen3-VL-30B-A3B for this use. | ADR-0005 mentions the change in default. | Defaults differ between 78a3070 and HEAD; no stated reason. | Ask the owner. | Low | Open |
+| A-010 | Commit 37686a7 was written with an AI coding assistant (Co-Authored-By trailer) and reviewed by the owner. | Context for how recent changes were made. | Commit trailer 'Co-Authored-By: Claude Opus 4.6'. | Ask the owner. | High | Open |
+| A-011 | Merging all images in a directory tree into one output is intended (slide-deck use case). | ADR-0010 lists the merge as a consequence. | `main()` builds one keyframe list for all images. | Ask the owner. | Medium | Open |
+| A-012 | `--dedupe-strategy lines` producing empty output is an unnoticed bug, not intended behaviour. | ADR-0003 reports it as a defect. | `dedupe_sections` control flow: `lines` reaches neither the fuzzy nor the ngram branch. | Run with `--dedupe-strategy lines` on any input. | High | Open |
